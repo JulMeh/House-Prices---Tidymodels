@@ -27,6 +27,7 @@ Parts of my EDA are:
 - Correlation matrix
 - Plotting each numeric and factor variable with the help of a loop.
 
+## Modelling
 
 In the following I made some final adjustments and split the data into test and train data.
 Starting with tidymodels:
@@ -44,10 +45,22 @@ Moreover, they give some general suggestions which should be considered:
 - If you are lumping infrequently occurring categories together, do so before one-hot/dummy encoding.
 - Although you can perform dimension reduction procedures on categorical features, it is common to primarily do so on numeric features concerning feature engineering purposes.
 
+```
+
+```
+
 Afterwards, I used the prep and the juice function and started the workflow.
+ 
+```
+
+```
  
 As resampling method, I decided to do a quick k-fold cross validation instead of bootstrapping. 
 The models
+
+```
+
+```
 
 I applied a Regularized Regression, Random Forests and XGBoost. For all these models I proceeded as followed:
 1.    Define a parsnip model
@@ -61,3 +74,20 @@ I applied a Regularized Regression, Random Forests and XGBoost. For all these mo
 
  In addition, I promise not to go too deep into the optimization of each model, as this would go beyond the scope of these projects.
 
+### Glmnet:
+1-3) I decided to tune penalty and mixture with a filter of penalty <= .01
+```
+
+```
+4)
+```
+
+```
+5-6) I used RMSE to evaluate each model
+```
+
+```
+7) Prediction of target variable test data
+```
+
+```
