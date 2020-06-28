@@ -17,3 +17,29 @@ With 79 explanatory variables describing (almost) every aspect of residential ho
 - Metric: Submissions are evaluated on Root-Mean-Squared-Error (RMSE) between the logarithm of the predicted value and the logarithm of the observed sales price. (Taking logs means that errors in predicting expensive houses and cheap houses will affect the result equally.)
 
 Moreover, I try to put a focus on the use of tidyverse packages, an appealing visualization of the data, and to create a readable html file. 
+
+## Setup
+
+During the import of the data I already defined some data types and some levels of Ordinal data. Afterwards I changed NA values, which were described in the text file. To finish the setup I renamed a few more variables and merged test and training data. 
+ 
+Parts of my EDA are:
+-      Skewness
+-      Correlation matrix
+-      Plotting each numeric and factor variable with the help of a loop.
+
+
+In the following I made some final adjustments and split the data into test and train data.
+Starting with tidymodels:
+First, I started with a recipe. I built up this recipe based on the steps of Hands-On Machine Learning with R (Bradley Boehmke and Brandon Greenwell):
+1.    Filter out zero or near-zero variance features.
+2.    Perform imputation if required.
+3.    Normalize to resolve numeric feature skewness.
+4.    Standardize (center and scale) numeric features.
+5.    Perform dimension reduction (e.g., PCA) on numeric features.
+6.    One-hot or dummy encode categorical features.
+
+Moreover, they give some general suggestions which should be considered:
+•         If using a log or Box-Cox transformation, don’t center the data first or do any operations that might make the data non-positive. Alternatively, use the Yeo-Johnson transformation so you don’t have to worry about this.
+•         One-hot or dummy encoding typically results in sparse data which many algorithms can operate efficiently on. If you standardize sparse data you will create dense data and you lose the computational efficiency. Consequently, it’s often preferred to standardize your numeric features before one-hot/dummy encode.
+•         If you are lumping infrequently occurring categories together, do so before one-hot/dummy encoding.
+•         Although you can perform dimension reduction procedures on categorical features, it is common to primarily do so on numeric features concerning feature engineering purposes.
