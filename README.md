@@ -43,3 +43,21 @@ Moreover, they give some general suggestions which should be considered:
 - One-hot or dummy encoding typically results in sparse data which many algorithms can operate efficiently on. If you standardize sparse data you will create dense data and you lose the computational efficiency. Consequently, it’s often preferred to standardize your numeric features before one-hot/dummy encode.
 - If you are lumping infrequently occurring categories together, do so before one-hot/dummy encoding.
 - Although you can perform dimension reduction procedures on categorical features, it is common to primarily do so on numeric features concerning feature engineering purposes.
+
+Afterwards, I used the prep and the juice function and started the workflow.
+ 
+As resampling method, I decided to do a quick k-fold cross validation instead of bootstrapping. 
+The models
+
+I applied a Regularized Regression, Random Forests and XGBoost. For all these models I proceeded as followed:
+1.    Define a parsnip model
+2.    Define parameters using dials package
+3.    Combine model and recipe using workflows package
+4.    Tune the workflow using tune package
+5.    Evaluate tuning results
+6.    Select best model for prediction
+7.    Predict on test data
+8.    Finally, save the prediction on the test data
+
+ In addition, I promise not to go too deep into the optimization of each model, as this would go beyond the scope of these projects.
+
