@@ -204,3 +204,68 @@ rf_preds <-
     transmute(SalePrice = exp(.pred)) %>% 
     bind_cols(select(house_test, Id), .)
 ```
+
+### XGBoost Model
+1.-3. I decided to tune mtry and tree_depth and additionally I made more specifications.
+```
+# 1) Define a parsnip model
+xgb_model <- boost_tree(mtry = tune(), 
+                        trees = 2000,
+                        min_n = 13,
+                        tree_depth = tune(), 
+                        learn_rate = .02,
+                        loss_reduction = 0,
+                        sample_size = .5) %>%
+  set_mode("regression") %>% 
+  set_engine("xgboost",
+             objective = "reg:squarederror")
+             
+# 2) Define parameters using dials package
+xgb_param <- 
+    xgb_model %>%
+    parameters() %>% 
+    update(mtry = mtry(c(2L, 16L)), 
+           tree_depth = tree_depth(c(1L, 5L))) %>% 
+    finalize(select(juiced, -SalePrice))
+
+# 3) Combine model and recipe using workflows package
+xgb_workflow <- 
+    workflow() %>% 
+    add_recipe(house_rec) %>% 
+    add_model(xgb_model)
+```
+To go more into detail I recommend Bradley Boehmke and Brandon Greenwell’s Tuning strategy for XGBoost.
+4.
+```
+# 4) Tune the workflow using tune package
+tictoc::tic()
+xgb_tuned_results <- tune_bayes(xgb_workflow, 
+                         resamples = ames_vfold,
+                         initial = 25, iter = 50,
+                         param_info = xgb_param,
+                         control = control_bayes(no_improve = 15,
+                                                 verbose = FALSE))
+tictoc::toc()
+```
+5.-6. I used RMSE to evaluate each model
+```
+# 5) Evaluate tuning results
+show_best(xgb_tuned_results, "rmse",  n = 10)
+
+# 6) Select best model for, e.g., prediction
+xgb_param_best <- select_best(xgb_tuned_results, metric = "rmse" )
+xgb_model_best <- finalize_model(xgb_model, xgb_param_best)
+xgb_model_finalfit <- fit(xgb_model_best, SalePrice ~ ., data = juiced)
+```
+7. Prediction of target variable using test data
+```
+# 7) Predict on test data
+test_prep <- house_prep %>%
+  bake(house_test)
+
+xgb_preds <- 
+    predict(xgb_model_finalfit, new_data = test_prep) %>% 
+    transmute(SalePrice = exp(.pred)) %>% 
+    bind_cols(select(house_test, Id), .)
+```
+
