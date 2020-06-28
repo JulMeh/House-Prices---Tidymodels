@@ -149,3 +149,58 @@ glmnet_preds <-
     bind_cols(select(house_test, Id), .)
 head(glmnet_preds)
 ```
+
+### Random Forest:
+1.-3. I decided to tune mtry and min_n
+```
+# 1) Define a parsnip model
+rf_mod <- rand_forest(
+  mtry = tune(),
+  trees = 1000,
+  min_n = tune()) %>%
+  set_mode("regression") %>%
+  set_engine("ranger")
+  
+ # 2) Is in this case not necessary
+ 
+ # 3) Combine model and recipe using workflows package
+rf_workflow <- 
+    workflow() %>% 
+    add_recipe(house_rec) %>% 
+    add_model(rf_mod)
+```
+To go more into detail I recommend Bradley Boehmke and Brandon Greenwell’s tuning strategies for Random Forests.
+
+4.
+```
+# 4) Tune the workflow using tune package
+library(ranger)
+tictoc::tic()
+rf_tuned_results <- tune_grid(
+  rf_workflow,
+  resamples = ames_vfold,
+  grid = 20
+  )
+tictoc::toc()
+```
+5.-6. I used RMSE to evaluate each model
+```
+# 5) Evaluate tuning results
+show_best(rf_tuned_results, "rmse", n = 10)
+
+# 6) Select best model for, e.g., prediction
+rf_param_best <- select_best(rf_tuned_results, metric = "rmse")
+rf_model_best <- finalize_model(rf_mod, rf_param_best)
+rf_model_finalfit <- fit(rf_model_best, SalePrice ~ ., data = juiced)
+```
+7. Prediction of target variable using test data
+```
+# 7) Predict on test data
+test_prep <- house_prep %>%
+  bake(house_test)
+
+rf_preds <- 
+    predict(rf_model_finalfit, new_data = test_prep) %>% 
+    transmute(SalePrice = exp(.pred)) %>% 
+    bind_cols(select(house_test, Id), .)
+```
