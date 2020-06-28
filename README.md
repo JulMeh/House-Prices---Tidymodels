@@ -94,19 +94,58 @@ I applied a Regularized Regression, Random Forests and XGBoost. For all these mo
  In addition, I promise not to go too deep into the optimization of each model, as this would go beyond the scope of these projects.
 
 ### Glmnet:
-1-3) I decided to tune penalty and mixture with a filter of penalty <= .01
+1.-3. I decided to tune penalty and mixture with a filter of penalty <= .01
 ```
+# 1) Define a parsnip model
+glmnet_mod <- linear_reg(penalty = tune(),
+                         mixture = tune()) %>%
+  set_engine("glmnet")
+  
+# 2) Define parameters using dials package
+para <- parameters(penalty(),mixture())
+glmnet_tune_grid <- grid_regular(para,
+                                 filter = penalty <= .01,
+                                 levels = 20
+                                 )
 
+# 3) Combine model and recipe using workflows package
+glmnet_workflow <- 
+    workflow() %>% 
+    add_recipe(house_rec) %>% 
+    add_model(glmnet_mod)
 ```
-4)
+4.
 ```
+# 4) Tune the workflow using tune package
+tictoc::tic()
+glmnet_tuned_results <- tune_grid(
+  glmnet_workflow,
+  resamples = ames_vfold,
+  grid = glmnet_tune_grid,
+  metrics = metric_set(rmse),
+  control = control_grid()
+)
+tictoc::toc()
+```
+5.-6. I used RMSE to evaluate each model
+```
+# 5) Evaluate tuning results
+show_best(glmnet_tuned_results, "rmse", n = 10)
 
+# 6) Select best model for, e.g., prediction
+glmnet_param_best <- select_best(glmnet_tuned_results, metric = "rmse")
+glmnet_model_best <- finalize_model(glmnet_mod, glmnet_param_best)
+glmnet_model_finalfit <- fit(glmnet_model_best, SalePrice ~ ., data = juiced)
 ```
-5-6) I used RMSE to evaluate each model
+7. Prediction of target variable test data
 ```
+# 7) Predict on test data
+test_prep <- house_prep %>%
+  bake(house_test)
 
-```
-7) Prediction of target variable test data
-```
-
+glmnet_preds <- 
+    predict(glmnet_model_finalfit, new_data = test_prep) %>% 
+    transmute(SalePrice = exp(.pred)) %>% 
+    bind_cols(select(house_test, Id), .)
+head(glmnet_preds)
 ```
