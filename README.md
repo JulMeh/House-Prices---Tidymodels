@@ -46,20 +46,39 @@ Moreover, they give some general suggestions which should be considered:
 - Although you can perform dimension reduction procedures on categorical features, it is common to primarily do so on numeric features concerning feature engineering purposes.
 
 ```
-
+house_rec <- recipe(SalePrice ~ ., data = house_train) %>%
+  update_role(Id, new_role = "ID") %>% # define the ID as ID to exclude it form modelling
+  step_log(SalePrice) %>% # dealing with the skewness of the target variable
+  step_knnimpute(all_predictors(), neighbors = 3) %>% # remove the last NA’s with KNN
+  step_nzv(all_nominal())  %>% # using the Near-Zero Variance filter
+  step_BoxCox(all_numeric(),-all_outcomes()) %>% # dealing with the skewness of the other variables 
+  step_center(all_numeric(), -all_outcomes()) %>% # centering numeric data
+  step_scale(all_numeric(), -all_outcomes()) %>% # scaling Numeric Data
+  step_pca(all_numeric(), -all_outcomes())%>% # reduction of variables
+  step_other(all_nominal(), -all_outcomes(), threshold = 0.01) %>% #potentially pool infrequently occurring values into an "other" category
+  step_dummy(all_nominal(), -all_outcomes()) # creating dummies
 ```
 
 Afterwards, I used the prep and the juice function and started the workflow.
  
 ```
+house_prep <- prep(house_rec)
 
+juiced <- juice(house_prep)
+
+wf <- workflow() %>%
+  add_recipe(house_rec)
+
+test_prep <- house_prep %>%
+  bake(house_test)
 ```
  
 As resampling method, I decided to do a quick k-fold cross validation instead of bootstrapping. 
 The models
 
 ```
-
+train_cv <- house_train %>%
+  vfold_cv(v = 5, strata = "SalePrice")
 ```
 
 I applied a Regularized Regression, Random Forests and XGBoost. For all these models I proceeded as followed:
