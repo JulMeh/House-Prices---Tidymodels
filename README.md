@@ -31,7 +31,7 @@ Parts of my EDA are:
 
 In the following I made some final adjustments and split the data into test and train data.
 Starting with tidymodels:
-First, I started with a recipe. I built up this recipe based on the steps of Hands-On Machine Learning with R (Bradley Boehmke and Brandon Greenwell):
+First, I started with a recipe. I built up this recipe based on the steps of [Hands-On Machine Learning with R](https://bradleyboehmke.github.io/HOML/engineering.html#proper-implementation) (Bradley Boehmke and Brandon Greenwell):
 1.    Filter out zero or near-zero variance features.
 2.    Perform imputation if required.
 3.    Normalize to resolve numeric feature skewness.
@@ -169,7 +169,7 @@ rf_workflow <-
     add_recipe(house_rec) %>% 
     add_model(rf_mod)
 ```
-To go more into detail I recommend Bradley Boehmke and Brandon Greenwell’s tuning strategies for Random Forests.
+To go more into detail I recommend Bradley Boehmke and Brandon Greenwell’s [tuning strategies for Random Forests](https://bradleyboehmke.github.io/HOML/random-forest.html#rf-tuning-strategy) .
 
 4.
 ```
@@ -234,7 +234,7 @@ xgb_workflow <-
     add_recipe(house_rec) %>% 
     add_model(xgb_model)
 ```
-To go more into detail I recommend Bradley Boehmke and Brandon Greenwell’s Tuning strategy for XGBoost.
+To go more into detail I recommend Bradley Boehmke and Brandon Greenwell’s [tuning strategy for XGBoost](https://bradleyboehmke.github.io/HOML/gbm.html#xgboost).
 4.
 ```
 # 4) Tune the workflow using tune package
