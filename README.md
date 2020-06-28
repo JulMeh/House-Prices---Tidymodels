@@ -269,3 +269,7 @@ xgb_preds <-
     bind_cols(select(house_test, Id), .)
 ```
 
+## Conclusion
+Finally, I saved all models and some of their combinations and uploaded them to Kaggle. The simplest model, the glmnet, had the best result. With its simple setup I got the 1882nd place of 5807 which is under the best 33% (23.06.2020).
+
+But I am sure that if you go a bit deeper into the other models and invest more time in their tuning, you will surely get a better result.
