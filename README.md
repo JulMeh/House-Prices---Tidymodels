@@ -23,9 +23,9 @@ Moreover, I try to put a focus on the use of tidyverse packages, an appealing vi
 During the import of the data I already defined some data types and some levels of Ordinal data. Afterwards I changed NA values, which were described in the text file. To finish the setup I renamed a few more variables and merged test and training data. 
  
 Parts of my EDA are:
--      Skewness
--      Correlation matrix
--      Plotting each numeric and factor variable with the help of a loop.
+- Skewness
+- Correlation matrix
+- Plotting each numeric and factor variable with the help of a loop.
 
 
 In the following I made some final adjustments and split the data into test and train data.
@@ -39,7 +39,7 @@ First, I started with a recipe. I built up this recipe based on the steps of Han
 6.    One-hot or dummy encode categorical features.
 
 Moreover, they give some general suggestions which should be considered:
-•         If using a log or Box-Cox transformation, don’t center the data first or do any operations that might make the data non-positive. Alternatively, use the Yeo-Johnson transformation so you don’t have to worry about this.
-•         One-hot or dummy encoding typically results in sparse data which many algorithms can operate efficiently on. If you standardize sparse data you will create dense data and you lose the computational efficiency. Consequently, it’s often preferred to standardize your numeric features before one-hot/dummy encode.
-•         If you are lumping infrequently occurring categories together, do so before one-hot/dummy encoding.
-•         Although you can perform dimension reduction procedures on categorical features, it is common to primarily do so on numeric features concerning feature engineering purposes.
+- If using a log or Box-Cox transformation, don’t center the data first or do any operations that might make the data non-positive. Alternatively, use the Yeo-Johnson transformation so you don’t have to worry about this.
+- One-hot or dummy encoding typically results in sparse data which many algorithms can operate efficiently on. If you standardize sparse data you will create dense data and you lose the computational efficiency. Consequently, it’s often preferred to standardize your numeric features before one-hot/dummy encode.
+- If you are lumping infrequently occurring categories together, do so before one-hot/dummy encoding.
+- Although you can perform dimension reduction procedures on categorical features, it is common to primarily do so on numeric features concerning feature engineering purposes.
