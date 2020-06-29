@@ -1,5 +1,7 @@
 # Predicting House Prices Tidymodels
 
+![alt text](https://github.com/JulMeh/House_Prices_Tidymodels/blob/master/images/new-home-1540889_960_720.jpg "house_to_sale")
+
 ## Introduction
 
 In this document I am going to predict the selling price of houses. To do so, I  use data from Kaggle, do an EDA, do some transformations and finally use Advanced regression techniques to create a model for the prediction.
