@@ -1,6 +1,6 @@
 # Predicting House Prices Tidymodels
+<img width="750" alt="images/new-home-1540889_960_720.jpg" src="images/new-home-1540889_960_720.jpg">
 
-![alt text](https://github.com/JulMeh/House_Prices_Tidymodels/blob/master/images/new-home-1540889_960_720.jpg "house_to_sale")
 
 ## Introduction
 
